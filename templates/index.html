@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Hangman Game</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="top-header">
+
+        <div class="brand">
+            <div class="brand-icon">🎯</div>
+
+            <div>
+                <h1>HANGMAN</h1>
+                <span>Word Challenge</span>
+            </div>
+        </div>
+
+        <div class="header-badge">
+            <span class="status-dot"></span>
+            Ready to Play
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN CONTAINER ================= -->
+
+    <main class="container">
+
+
+        <!-- ================= SETUP SCREEN ================= -->
+
+        <section id="setup-screen" class="setup-screen">
+
+            <div class="hero-section">
+
+                <span class="hero-label">
+                    ✦ TEST YOUR WORD POWER
+                </span>
+
+                <h2>
+                    Guess the word.<br>
+                    <span>Save the Hangman.</span>
+                </h2>
+
+                <p>
+                    Choose your category and difficulty,
+                    then start your challenge.
+                </p>
+
+            </div>
+
+
+            <!-- Category -->
+
+            <div class="selection-section">
+
+                <div class="section-heading">
+                    <span class="section-number">01</span>
+
+                    <div>
+                        <h3>Choose Category</h3>
+                        <p>Select a topic for your challenge</p>
+                    </div>
+                </div>
+
+
+                <div id="category-options" class="option-grid">
+
+                    <button
+                        class="option-card active"
+                        data-category="Programming"
+                    >
+                        <span class="option-icon">💻</span>
+
+                        <span class="option-content">
+                            <strong>Programming</strong>
+                            <small>Code & Development</small>
+                        </span>
+
+                        <span class="check-icon">✓</span>
+                    </button>
+
+
+                    <button
+                        class="option-card"
+                        data-category="Technology"
+                    >
+                        <span class="option-icon">⚡</span>
+
+                        <span class="option-content">
+                            <strong>Technology</strong>
+                            <small>Tech & Innovation</small>
+                        </span>
+
+                        <span class="check-icon">✓</span>
+                    </button>
+
+
+                    <button
+                        class="option-card"
+                        data-category="Animals"
+                    >
+                        <span class="option-icon">🐾</span>
+
+                        <span class="option-content">
+                            <strong>Animals</strong>
+                            <small>Wildlife & Nature</small>
+                        </span>
+
+                        <span class="check-icon">✓</span>
+                    </button>
+
+
+                    <button
+                        class="option-card"
+                        data-category="General"
+                    >
+                        <span class="option-icon">🌎</span>
+
+                        <span class="option-content">
+                            <strong>General</strong>
+                            <small>Everyday Knowledge</small>
+                        </span>
+
+                        <span class="check-icon">✓</span>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Difficulty -->
+
+            <div class="selection-section">
+
+                <div class="section-heading">
+                    <span class="section-number">02</span>
+
+                    <div>
+                        <h3>Choose Difficulty</h3>
+                        <p>How challenging should it be?</p>
+                    </div>
+                </div>
+
+
+                <div id="difficulty-options" class="difficulty-grid">
+
+                    <button
+                        class="difficulty-card active"
+                        data-difficulty="easy"
+                    >
+                        <span class="difficulty-icon">🌱</span>
+
+                        <span class="difficulty-content">
+                            <strong>Easy</strong>
+                            <small>10 points / letter</small>
+                        </span>
+                    </button>
+
+
+                    <button
+                        class="difficulty-card"
+                        data-difficulty="medium"
+                    >
+                        <span class="difficulty-icon">🔥</span>
+
+                        <span class="difficulty-content">
+                            <strong>Medium</strong>
+                            <small>20 points / letter</small>
+                        </span>
+                    </button>
+
+
+                    <button
+                        class="difficulty-card"
+                        data-difficulty="hard"
+                    >
+                        <span class="difficulty-icon">💀</span>
+
+                        <span class="difficulty-content">
+                            <strong>Hard</strong>
+                            <small>30 points / letter</small>
+                        </span>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Start Button -->
+
+            <button
+                id="start-game-btn"
+                class="primary-btn"
+            >
+                <span>Start Game</span>
+                <span class="btn-arrow">→</span>
+            </button>
+
+        </section>
+
+
+
+        <!-- ================= GAME SCREEN ================= -->
+
+        <section
+            id="game-screen"
+            class="game-screen hidden"
+        >
+
+
+            <!-- Game Top Bar -->
+
+            <div class="game-topbar">
+
+                <button
+                    id="back-btn"
+                    class="secondary-btn"
+                >
+                    ← Back
+                </button>
+
+
+                <div class="game-info">
+
+                    <div class="info-pill">
+                        <span>Category</span>
+                        <strong id="game-category">Programming</strong>
+                    </div>
+
+                    <div class="info-pill">
+                        <span>Difficulty</span>
+                        <strong id="game-difficulty">Easy</strong>
+                    </div>
+
+                </div>
+
+
+                <button
+                    id="new-game-btn"
+                    class="secondary-btn"
+                >
+                    ↻ New Game
+                </button>
+
+            </div>
+
+
+
+            <!-- Game Layout -->
+
+            <div class="game-layout">
+
+
+                <!-- ================= HANGMAN PANEL ================= -->
+
+                <div class="hangman-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <span class="panel-label">
+                                CURRENT CHALLENGE
+                            </span>
+
+                            <h2>Save the Hangman</h2>
+                        </div>
+
+                        <div
+                            id="attempts-badge"
+                            class="attempts-badge"
+                        >
+                            6 Attempts
+                        </div>
+
+                    </div>
+
+
+                    <!-- Hangman Drawing -->
+
+                    <div
+                        id="hangman-drawing"
+                        class="hangman-drawing"
+                    >
+
+                        <svg
+                            viewBox="0 0 320 300"
+                            class="hangman-svg"
+                            aria-label="Hangman drawing"
+                        >
+
+                            <!-- Gallows -->
+
+                            <line
+                                x1="45"
+                                y1="265"
+                                x2="275"
+                                y2="265"
+                                class="gallows"
+                            />
+
+                            <line
+                                x1="85"
+                                y1="265"
+                                x2="85"
+                                y2="35"
+                                class="gallows"
+                            />
+
+                            <line
+                                x1="85"
+                                y1="35"
+                                x2="210"
+                                y2="35"
+                                class="gallows"
+                            />
+
+                            <line
+                                x1="210"
+                                y1="35"
+                                x2="210"
+                                y2="65"
+                                class="gallows"
+                            />
+
+
+                            <!-- Head -->
+
+                            <circle
+                                id="head"
+                                cx="210"
+                                cy="95"
+                                r="30"
+                                class="hangman-part"
+                            />
+
+
+                            <!-- Body -->
+
+                            <line
+                                id="body"
+                                x1="210"
+                                y1="125"
+                                x2="210"
+                                y2="190"
+                                class="hangman-part"
+                            />
+
+
+                            <!-- Left Arm -->
+
+                            <line
+                                id="left-arm"
+                                x1="210"
+                                y1="140"
+                                x2="170"
+                                y2="170"
+                                class="hangman-part"
+                            />
+
+
+                            <!-- Right Arm -->
+
+                            <line
+                                id="right-arm"
+                                x1="210"
+                                y1="140"
+                                x2="250"
+                                y2="170"
+                                class="hangman-part"
+                            />
+
+
+                            <!-- Left Leg -->
+
+                            <line
+                                id="left-leg"
+                                x1="210"
+                                y1="190"
+                                x2="175"
+                                y2="235"
+                                class="hangman-part"
+                            />
+
+
+                            <!-- Right Leg -->
+
+                            <line
+                                id="right-leg"
+                                x1="210"
+                                y1="190"
+                                x2="245"
+                                y2="235"
+                                class="hangman-part"
+                            />
+
+                        </svg>
+
+                    </div>
+
+
+                    <!-- Attempts -->
+
+                    <div class="attempts-section">
+
+                        <div class="attempts-label">
+                            WRONG ATTEMPTS
+                        </div>
+
+                        <div class="attempts-bar">
+
+                            <span class="attempt active"></span>
+                            <span class="attempt active"></span>
+                            <span class="attempt active"></span>
+                            <span class="attempt active"></span>
+                            <span class="attempt active"></span>
+                            <span class="attempt active"></span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ================= WORD PANEL ================= -->
+
+                <div class="word-panel">
+
+
+                    <!-- Stats -->
+
+                    <div class="stats-grid">
+
+                        <div class="stat-card">
+
+                            <span class="stat-icon">⭐</span>
+
+                            <div>
+                                <small>SCORE</small>
+                                <strong id="score-value">0</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <span class="stat-icon">🔥</span>
+
+                            <div>
+                                <small>STREAK</small>
+                                <strong id="streak-value">0</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <span class="stat-icon">⏱️</span>
+
+                            <div>
+                                <small>TIME</small>
+                                <strong id="timer-value">0.0s</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Word -->
+
+                    <div class="word-section">
+
+                        <span class="panel-label">
+                            GUESS THE WORD
+                        </span>
+
+                        <div
+                            id="word-display"
+                            class="word-display"
+                        >
+                            _ _ _ _ _
+                        </div>
+
+                        <p class="word-message">
+                            Choose a letter to reveal the word
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Wrong Letters -->
+
+                    <div class="wrong-letters-section">
+
+                        <span class="panel-label">
+                            WRONG LETTERS
+                        </span>
+
+                        <div
+                            id="wrong-letters"
+                            class="wrong-letters"
+                        >
+                            <span class="empty-state">
+                                None yet
+                            </span>
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Keyboard -->
+
+                    <div class="keyboard-section">
+
+                        <div class="keyboard-heading">
+                            <span class="panel-label">
+                                KEYBOARD
+                            </span>
+
+                            <span class="keyboard-help">
+                                Click or type a letter
+                            </span>
+                        </div>
+
+                        <div
+                            id="keyboard"
+                            class="keyboard"
+                        >
+
+                            <button data-letter="a">A</button>
+                            <button data-letter="b">B</button>
+                            <button data-letter="c">C</button>
+                            <button data-letter="d">D</button>
+                            <button data-letter="e">E</button>
+                            <button data-letter="f">F</button>
+                            <button data-letter="g">G</button>
+                            <button data-letter="h">H</button>
+                            <button data-letter="i">I</button>
+                            <button data-letter="j">J</button>
+                            <button data-letter="k">K</button>
+                            <button data-letter="l">L</button>
+                            <button data-letter="m">M</button>
+                            <button data-letter="n">N</button>
+                            <button data-letter="o">O</button>
+                            <button data-letter="p">P</button>
+                            <button data-letter="q">Q</button>
+                            <button data-letter="r">R</button>
+                            <button data-letter="s">S</button>
+                            <button data-letter="t">T</button>
+                            <button data-letter="u">U</button>
+                            <button data-letter="v">V</button>
+                            <button data-letter="w">W</button>
+                            <button data-letter="x">X</button>
+                            <button data-letter="y">Y</button>
+                            <button data-letter="z">Z</button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Hint -->
+
+                    <div class="hint-section">
+
+                        <button
+                            id="hint-btn"
+                            class="hint-btn"
+                        >
+                            💡
+                            <span>Use Hint</span>
+
+                            <small>
+                                <span id="hint-value">2</span> left
+                            </small>
+                        </button>
+
+                        <div
+                            id="hint-message"
+                            class="hint-message"
+                        >
+                            Hint will reveal one letter.
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- Game Message -->
+
+            <div
+                id="message"
+                class="game-message"
+            ></div>
+
+        </section>
+
+
+
+        <!-- ================= RESULT MODAL ================= -->
+
+        <div
+            id="result-modal"
+            class="modal hidden"
+        >
+
+            <div class="modal-overlay"></div>
+
+            <div class="result-card">
+
+                <div
+                    id="result-icon"
+                    class="result-icon"
+                >
+                    🎉
+                </div>
+
+                <span
+                    id="result-label"
+                    class="result-label"
+                >
+                    CHALLENGE COMPLETE
+                </span>
+
+                <h2 id="result-title">
+                    You Won!
+                </h2>
+
+                <p id="result-message">
+                    Great job! You guessed the word.
+                </p>
+
+
+                <div class="result-stats">
+
+                    <div>
+                        <small>FINAL SCORE</small>
+                        <strong id="final-score">0</strong>
+                    </div>
+
+                    <div>
+                        <small>TIME</small>
+                        <strong id="final-time">0s</strong>
+                    </div>
+
+                    <div>
+                        <small>ATTEMPTS</small>
+                        <strong id="final-attempts">0</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="result-actions">
+
+                    <button
+                        id="play-again-btn"
+                        class="primary-btn"
+                    >
+                        Play Again →
+                    </button>
+
+                    <button
+                        id="close-modal-btn"
+                        class="secondary-btn"
+                    >
+                        Back to Menu
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </body>
+    </html>
+
+
+
+    <!-- ================= FOOTER ================= -
